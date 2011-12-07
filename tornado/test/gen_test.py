@@ -124,6 +124,19 @@ class GenTest(AsyncTestCase):
             self.stop()
         self.run_gen(f)
 
+    def test_task_exception_in_yield(self):
+        @gen.engine
+        def raise_error(callback):
+            raise Exception()
+        @gen.engine
+        def f():
+            try:
+                yield gen.Task(raise_error)
+            except:
+                pass
+            self.stop()
+        self.run_gen(f)
+
     def test_wait_all(self):
         @gen.engine
         def f():
