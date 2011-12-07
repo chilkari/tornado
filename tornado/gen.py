@@ -206,9 +206,10 @@ class Task(YieldPoint):
         self.kwargs["callback"] = runner.result_callback(self.key)
         try:
             self.func(*self.args, **self.kwargs)
-        except Exception, e:
+        except Exception:
             try:
-                self.runner.gen.throw(e)
+                exc_info = sys.exc_info()
+                self.runner.gen.throw(*exc_info)
             except StopIteration:
                 return
     
